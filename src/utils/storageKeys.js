@@ -1,0 +1,15 @@
+export const KEYS = {
+  progress:              "progress",
+  campaignStarted:       "campaignStarted",
+  company:               "company",
+  activeSession:         "activeSession",
+  pastSessions:          "pastSessions",
+  campaignNotes:         "campaignNotes",
+  campaignImport:        "campaignImport",
+  campaignImportFinished:"campaignImportFinished",
+  scenarioStatsSetup:    "scenarioStatsSetup",
+  combatRules:           "combatRules",
+  pendingToast:          "pendingToast",
+  appLanguage:           "appLanguage",
+  appZoom:               "appZoom",
+};
