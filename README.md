@@ -42,6 +42,11 @@ Rendez-vous dans les [Releases](https://github.com/Martensq/frostlog/releases) p
 
 Construit avec React, Vite, Tailwind CSS et Tauri. Toutes les données sont stockées localement dans un fichier JSON sur votre machine, aucune connexion réseau requise.
 
+### Support
+
+Si vous aimez l'app, vous pouvez me soutenir ici :
+[☕ Buy me a coffee](https://buymeacoffee.com/martensq)
+
 ---
 
 ## English
@@ -81,3 +86,8 @@ Head to the [Releases](https://github.com/Martensq/frostlog/releases) page to do
 ### Tech stack
 
 Built with React, Vite, Tailwind CSS and Tauri. All data is stored locally in a JSON file on your machine, no network connection required.
+
+### Support
+
+If you enjoy the app, you can support me here:
+[☕ Buy me a coffee](https://buymeacoffee.com/martensq)
