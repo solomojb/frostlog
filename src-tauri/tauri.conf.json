@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Frostlog",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "identifier": "com.frostlog.app",
   "build": {
     "frontendDist": "../dist",
@@ -22,6 +22,14 @@
     ],
     "security": {
       "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZFRUMzRUY0NDdFOERGNkMKUldSczMraEg5RDdzYmhiUGEyYnRtcjFNRmJQVTBsYW1KS21RS256UXE5dHhGY3J5VmJpbUQ5VXYK",
+      "endpoints": [
+        "https://github.com/martensq/frostlog/releases/latest/download/latest.json"
+      ]
     }
   },
   "bundle": {

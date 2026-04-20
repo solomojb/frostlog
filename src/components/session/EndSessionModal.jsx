@@ -106,7 +106,7 @@ function EndSessionModal({ onConfirm, onClose, initialUnlocked = [], sessionDate
                     </span>
                     <div className="flex flex-col flex-1 min-w-0" style={{ gap: 1 }}>
                       {item.note && (
-                        <span className="text-xs" style={{ color: "var(--c-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <span className="text-xs" style={{ color: "var(--c-muted)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                           {item.note}
                         </span>
                       )}

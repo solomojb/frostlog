@@ -6,7 +6,7 @@ import { TITLE_BY_KEY } from "../utils/titles.jsx";
 import { IcoChevronDown } from "../components/ui/Icons";
 import { useToast } from "../context/ToastContext";
 import { useCompany } from "../context/CompanyContext";
-import { formatDate, formatTime, formatDuration } from "../utils/dateUtils";
+import { useDateFormatters } from "../utils/dateUtils";
 import { resolveName, resolveChar, computeMVP, computeMVPScores, computeTitles, aggregateSessionStats } from "../utils/statUtils";
 import { KEYS } from "../utils/storageKeys";
 import storage from "../utils/storage";
@@ -123,6 +123,7 @@ function ScenarioRow({ s, session, company }) {
 
 function SessionView({ session, company }) {
   const t = useT();
+  const { formatDate, formatTime, formatDuration } = useDateFormatters();
   if (!session) return <p className="text-sm italic text-center py-8" style={{ color: "var(--c-muted)" }}>{t("last_none")}</p>;
 
   const allStats = session.scenarios?.filter(s => s.playerStats?.length > 0) ?? [];
@@ -216,7 +217,7 @@ function SessionView({ session, company }) {
             {session.unlockedScenarios.map((s, i) => (
               <div key={i} className="frost-inner px-3 py-2 flex flex-col gap-0.5">
                 <span style={{ color: "var(--c-ice)", fontFamily: "'Cinzel', serif", fontSize: "0.8rem" }}>{t("lbl_scenario", { n: s.number })}</span>
-                {s.note && <span className="text-xs" style={{ color: "var(--c-muted)" }}>{s.note}</span>}
+                {s.note && <span className="text-xs" style={{ color: "var(--c-muted)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{s.note}</span>}
               </div>
             ))}
           </div>
@@ -230,6 +231,7 @@ function LastSessionPage() {
   const showToast = useToast();
   const { company } = useCompany();
   const t = useT();
+  const { formatDate, formatTime } = useDateFormatters();
 
   const [pastSessions, setPastSessions] = useState(() => {
     try { return JSON.parse(storage.getItem(KEYS.pastSessions) ?? "[]"); } catch { return []; }

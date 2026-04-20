@@ -11,6 +11,9 @@
     "core:webview:allow-set-webview-zoom",
     "fs:allow-app-read-recursive",
     "fs:allow-app-write-recursive",
-    "dialog:allow-save"
+    "dialog:allow-save",
+    "updater:allow-check",
+    "updater:allow-download-and-install",
+    "process:allow-restart"
   ]
 }

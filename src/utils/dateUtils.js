@@ -1,3 +1,5 @@
+import { useLanguage } from "../context/LanguageContext";
+
 /**
  * Retourne une string ISO-like en heure LOCALE pour les inputs datetime-local.
  * Format : "YYYY-MM-DDTHH:mm" (pas de Z, pas d'offset)
@@ -43,4 +45,32 @@ export function formatDurationMs(ms) {
     const h = Math.floor(ms / 3600000);
     const m = Math.floor((ms % 3600000) / 60000);
     return h > 0 ? `${h}h${String(m).padStart(2, "0")}` : `${m} min`;
+}
+
+// ── Hook React — formatage avec la locale de l'app ────────────────────────────
+
+/**
+ * Retourne des fonctions de formatage de dates adaptées à la langue active.
+ * En EN : utilise navigator.language (locale OS), adapte le format et le fuseau.
+ * En FR : utilise "fr-FR".
+ */
+export function useDateFormatters() {
+    const { lang } = useLanguage();
+    const locale = lang === "en" ? "en-US" : "fr-FR";
+    return {
+        formatDate: (iso) => {
+            if (!iso) return "—";
+            return new Date(iso).toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" });
+        },
+        formatDateShort: (iso) => {
+            if (!iso) return "—";
+            return new Date(iso).toLocaleDateString(locale, { day: "2-digit", month: "2-digit" });
+        },
+        formatTime: (iso) => {
+            if (!iso) return "—";
+            return new Date(iso).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+        },
+        formatDuration,
+        formatDurationMs,
+    };
 }

@@ -372,4 +372,11 @@ export const fr = {
   shortcut_boss_key:       "Boss +1",
   shortcut_undo:           "Annuler",
   shortcut_redo:           "Rétablir",
+
+  // ── Mise à jour ───────────────────────────────────────────────────────────
+  update_available:        "Mise à jour disponible — v{v}",
+  update_install:          "Installer",
+  update_installing:       "Installation…",
+  update_later:            "Plus tard",
+  update_error:            "Échec de la mise à jour",
 };

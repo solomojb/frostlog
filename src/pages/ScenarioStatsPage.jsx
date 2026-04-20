@@ -117,10 +117,13 @@ function RulesButton({ rules }) {
   const t = useT();
   const [visible, setVisible] = useState(false);
   const btnRef = useRef(null);
+  const wrapperRef = useRef(null);
   const [pos, setPos] = useState({ top: 0, right: 0 });
   const tooltipRef = useRef(null);
+  const hideTimerRef = useRef(null);
 
-  function handleMouseEnter() {
+  function showTooltip() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     if (btnRef.current) {
       const r = btnRef.current.getBoundingClientRect();
       setPos({ top: r.bottom + 8, right: window.innerWidth - r.right });
@@ -128,15 +131,25 @@ function RulesButton({ rules }) {
     setVisible(true);
   }
 
-  function handleWheel(e) {
-    if (tooltipRef.current) {
-      tooltipRef.current.scrollTop += e.deltaY;
-      e.preventDefault();
-    }
+  function scheduleHide() {
+    hideTimerRef.current = setTimeout(() => setVisible(false), 120);
   }
 
+  // Listener natif non-passif sur le wrapper : scroll tooltip, bloque la page
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || !visible) return;
+    function onWheel(e) {
+      if (!tooltipRef.current) return;
+      e.preventDefault();
+      tooltipRef.current.scrollTop += e.deltaY;
+    }
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [visible]);
+
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={() => setVisible(false)} onWheel={handleWheel}>
+    <div ref={wrapperRef} onMouseEnter={showTooltip} onMouseLeave={scheduleHide}>
       <button ref={btnRef}
         className="text-xs px-2.5 py-1 rounded"
         style={{
@@ -389,8 +402,10 @@ function UndoButton({ onUndo, disabled, undoStack, currentAction, playerNames })
   const [flash, setFlash] = useState(false);
   const [hovering, setHovering] = useState(false);
   const btnRef = useRef(null);
+  const wrapperRef = useRef(null);
   const tooltipRef = useRef(null);
   const [pos, setPos] = useState({ top: 0, left: 0 });
+  const hideTimerRef = useRef(null);
 
   function handleClick() {
     if (disabled && !currentAction) return;
@@ -399,7 +414,8 @@ function UndoButton({ onUndo, disabled, undoStack, currentAction, playerNames })
     setTimeout(() => setFlash(false), 150);
   }
 
-  function handleMouseEnter() {
+  function showTooltip() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     if (btnRef.current) {
       const r = btnRef.current.getBoundingClientRect();
       setPos({ top: r.bottom + 8, left: r.left + r.width / 2 });
@@ -407,12 +423,22 @@ function UndoButton({ onUndo, disabled, undoStack, currentAction, playerNames })
     setHovering(true);
   }
 
-  function handleWheel(e) {
-    if (tooltipRef.current) {
+  function scheduleHide() {
+    hideTimerRef.current = setTimeout(() => setHovering(false), 120);
+  }
+
+  // Listener natif non-passif sur le wrapper : scroll tooltip, bloque la page
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || !hovering) return;
+    function onWheel(e) {
+      if (!tooltipRef.current) return;
       e.preventDefault();
       tooltipRef.current.scrollTop += e.deltaY;
     }
-  }
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [hovering]);
 
   const hasAnything = !!currentAction || undoStack.length > 0;
   const history = [
@@ -421,7 +447,7 @@ function UndoButton({ onUndo, disabled, undoStack, currentAction, playerNames })
   ].reverse();
 
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={() => setHovering(false)} onWheel={handleWheel} className="flex items-center" style={{ position: "relative" }}>
+    <div ref={wrapperRef} onMouseEnter={showTooltip} onMouseLeave={scheduleHide} className="flex items-center" style={{ position: "relative" }}>
       <button ref={btnRef} onClick={handleClick} disabled={!hasAnything}
         className="btn-ghost-sm" title={t("shortcut_undo")}
         style={{
@@ -435,11 +461,13 @@ function UndoButton({ onUndo, disabled, undoStack, currentAction, playerNames })
         <span style={{ transform: "scale(1.5)", display: "inline-flex" }}><IcoUndo /></span>
       </button>
       {hovering && hasAnything && (
-        <div ref={tooltipRef} style={{
-          position: "fixed", top: pos.top, left: pos.left, transform: "translateX(-50%)",
-          zIndex: 9999, minWidth: 230, pointerEvents: "none",
-          maxHeight: "60vh", overflowY: "auto",
-        }} className="frost-block p-3 scrollbar-hide">
+        <div
+          ref={tooltipRef}
+          style={{
+            position: "fixed", top: pos.top, left: pos.left, transform: "translateX(-50%)",
+            zIndex: 9999, minWidth: 230, pointerEvents: "none",
+            maxHeight: "60vh", overflowY: "auto",
+          }} className="frost-block p-3 scrollbar-hide">
           <p className="sect-label" style={{ marginBottom: 8, fontSize: "0.65rem" }}>{t("stats_history")}</p>
           <div className="flex flex-col gap-1.5">
             {history.map((a, i) => {
@@ -624,13 +652,15 @@ function ScenarioStatsPage() {
     if (!savedSetup || !activeSession) return [];
     return activeSession.scenarios?.find(s => s.id === savedSetup.scenarioId)?.playerStats ?? [];
   });
-  const [undoStack, setUndoStack]                   = useState([]);
-  const [redoStack, setRedoStack]                   = useState([]);
+  const [undoStack, setUndoStack]                   = useState(() => savedSetup?.undoStack ?? []);
+  const [redoStack, setRedoStack]                   = useState(() => savedSetup?.redoStack ?? []);
   const [currentAction, setCurrentAction]           = useState(null);
   const [currentActionKey, setCurrentActionKey]     = useState(0);
   const [activePlayerIdx, setActivePlayerIdx]       = useState(null);
   const pendingGroupRef  = useRef(null);
   const playersStatsRef  = useRef([]);
+  const undoStackRef     = useRef(undoStack);
+  const redoStackRef     = useRef(redoStack);
   const kbRef = useRef({});
 
   function handleReviewScenario(sc) {
@@ -713,6 +743,10 @@ function ScenarioStatsPage() {
     setPhase("setup");
     setSelectedScenarioId("");
     setPlayersStats([]);
+    setUndoStack([]);
+    setRedoStack([]);
+    setCurrentAction(null);
+    if (pendingGroupRef.current) { clearTimeout(pendingGroupRef.current.timerId); pendingGroupRef.current = null; }
     setConfirmCancel(false);
     setReadOnly(false);
   }
@@ -810,11 +844,41 @@ function ScenarioStatsPage() {
     }));
   }, [playersStats]);
 
-  // kbRef + playersStatsRef — toujours à jour sans recréer le listener
+  // kbRef + playersStatsRef + undoStackRef + redoStackRef — toujours à jour sans recréer le listener
   useEffect(() => {
     kbRef.current = { adjustStat, adjustKill, handleUndo, handleRedo, activePlayerIdx, playerNames, readOnly, setActivePlayerIdx };
     playersStatsRef.current = playersStats;
+    undoStackRef.current = undoStack;
+    redoStackRef.current = redoStack;
   });
+
+  // Persistance undo/redo dans SETUP_KEY
+  useEffect(() => {
+    if (phase !== "tracker" || readOnly) return;
+    const raw = storage.getItem(SETUP_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      storage.setItem(SETUP_KEY, JSON.stringify({ ...parsed, undoStack, redoStack }));
+    } catch {}
+  }, [undoStack, redoStack, phase, readOnly]);
+
+  // Au démontage, finaliser le groupe pending pour ne pas perdre l'action en cours
+  useEffect(() => {
+    return () => {
+      const p = pendingGroupRef.current;
+      if (!p) return;
+      clearTimeout(p.timerId);
+      const finalStack = [...undoStackRef.current, { snapshot: p.snapshotBefore, action: { playerIdx: p.playerIdx, kind: p.kind, delta: p.delta } }];
+      const raw = storage.getItem(SETUP_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          storage.setItem(SETUP_KEY, JSON.stringify({ ...parsed, undoStack: finalStack, redoStack: redoStackRef.current }));
+        } catch {}
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (phase !== "tracker") return;

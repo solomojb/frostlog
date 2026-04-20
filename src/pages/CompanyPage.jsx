@@ -9,7 +9,7 @@ import { IcoHome } from "../components/ui/Icons";
 import Modal from "../components/ui/Modal";
 import { IcoPlus, IcoPlusCircle, IcoPencil, IcoCheck, IcoX, IcoRetire, IcoEye } from "../components/ui/Icons";
 import { useToast } from "../context/ToastContext";
-import { formatDate, formatDateShort, formatDurationMs } from "../utils/dateUtils";
+import { formatDurationMs, useDateFormatters } from "../utils/dateUtils";
 import { killScore, computeMVPScores } from "../utils/statUtils";
 import { useT } from "../context/LanguageContext";
 import { KEYS } from "../utils/storageKeys";
@@ -41,10 +41,8 @@ const CHAR_ICONS = [
   { id: "trapper",       label: "Trapper",        src: "/assets/char_icones/fh-trapper-bw-icon.png" },
 ];
 
-// ── Aliases locaux (compatibilité avec les usages existants dans ce fichier) ──
+// ── Alias local (formatDurationMs ne dépend pas de la locale) ────────────────
 const fmtDuration = formatDurationMs;
-const fmtDate     = formatDateShort;
-const fmtDateFull = formatDate;
 
 // ── Couleurs & constantes charts ──────────────────────────────────────────────
 const C = {
@@ -559,6 +557,7 @@ function MemberEditModal({ member, onClose, onSave, onRetire, onRemove, isInActi
 // ── Page principale ───────────────────────────────────────────────────────────
 function CompanyPage() {
   const t = useT();
+  const { formatDate: fmtDateFull, formatDateShort: fmtDate } = useDateFormatters();
   const { scenarios } = useProgress();
   const { company, setCompanyName, addMember, updateMemberPseudo,
     setMemberCharacter, setMemberCharIcon, retireMemberCharacter, removeMember } = useCompany();
@@ -767,7 +766,7 @@ function CompanyPage() {
         dureeH: Math.round((new Date(s.endingDatetime) - new Date(s.startingDatetime)) / 360000) / 10,
       }))
       .filter(s => s.dureeMs > 0),
-  [sessions]);
+  [sessions, fmtDate]);
 
   const avgMs     = sessionChartData.length ? sessionChartData.reduce((a, b) => a + b.dureeMs, 0) / sessionChartData.length : 0;
   const longestMs = sessionChartData.length ? Math.max(...sessionChartData.map(s => s.dureeMs)) : 0;

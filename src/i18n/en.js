@@ -372,4 +372,11 @@ export const en = {
   shortcut_boss_key:       "Boss +1",
   shortcut_undo:           "Undo",
   shortcut_redo:           "Redo",
+
+  // ── Updates ───────────────────────────────────────────────────────────────
+  update_available:        "Update available — v{v}",
+  update_install:          "Install",
+  update_installing:       "Installing…",
+  update_later:            "Later",
+  update_error:            "Update failed",
 };

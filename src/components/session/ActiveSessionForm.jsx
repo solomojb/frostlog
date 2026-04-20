@@ -282,7 +282,7 @@ function ActiveSessionForm() {
               <div key={i} className="frost-inner px-3 py-2 flex items-start gap-2">
                 <div className="flex flex-col gap-0.5 flex-1">
                   <span style={{ color: "var(--c-ice)", fontFamily: "'Cinzel', serif", fontSize: "0.8rem" }}>{t("lbl_scenario", { n: s.number })}</span>
-                  {s.note && <span className="text-xs" style={{ color: "var(--c-muted)" }}>{s.note}</span>}
+                  {s.note && <span className="text-xs" style={{ color: "var(--c-muted)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{s.note}</span>}
                 </div>
                 <button type="button" onClick={() => setEditingUnlocked(s)} className="btn-ghost-sm" title={t("btn_edit")} style={{ flexShrink: 0 }}>
                   <IcoPencil />

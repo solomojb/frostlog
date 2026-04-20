@@ -20,10 +20,12 @@ import { ProgressProvider } from "./context/ProgressContext";
 import { CompanyProvider } from "./context/CompanyContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import UpdateChecker from "./components/ui/UpdateChecker";
 
 function App() {
   return (
     <LanguageProvider>
+    <UpdateChecker />
     <ToastProvider>
     <ProgressProvider>
     <CompanyProvider>
