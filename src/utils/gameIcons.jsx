@@ -35,12 +35,15 @@ export const GI_FILTER = {
   pink:      "brightness(0) saturate(100%) invert(60%) sepia(50%) saturate(700%) hue-rotate(290deg) brightness(110%)",
 };
 
+const assetPath = (path) => {
+  return `${import.meta.env.BASE_URL}${path}`;
+};
 // Composant React pour afficher une icône game-icons
 // Usage : <GIcon src={GI.swords} filter={GI_FILTER.blue} size={16} />
 export function GIcon({ src, filter, size = 16, style = {}, className = "", title }) {
   return (
     <img
-      src={src}
+      src={assetPath(src)}
       alt={title ?? ""}
       title={title}
       style={{ width: size, height: size, objectFit: "contain", filter, ...style }}
