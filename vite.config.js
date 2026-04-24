@@ -7,12 +7,7 @@ export default defineConfig({
     plugins: [
         react(),
         viteStaticCopy({
-            targets: [
-                {
-                    src: "assets/*",
-                    dest: "assets",
-                },
-            ],
+            targets: [{ src: "assets", dest: "assets" }],
         }),
     ],
 });
