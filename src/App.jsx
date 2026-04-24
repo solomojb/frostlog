@@ -23,6 +23,8 @@ import { LanguageProvider } from "./context/LanguageContext";
 import UpdateChecker from "./components/ui/UpdateChecker";
 import WebBanner from "./components/ui/WebBanner";
 
+const isTauri = typeof window !== "undefined" && !!window.__TAURI_INTERNALS__;
+
 function App() {
   return (
     <LanguageProvider>
@@ -31,7 +33,7 @@ function App() {
     <ProgressProvider>
     <CompanyProvider>
       <SessionProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={isTauri ? "" : "/frostlog/"}>
           <Routes>
             <Route element={<AppLayout />}>
               <Route path="/entry" element={<EntryPage />} />
