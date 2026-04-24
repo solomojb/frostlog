@@ -1,20 +1,22 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Frostlog</title>
-  <script type="text/javascript">
-    // Redirect to root with path info
-    /*var pathSegmentsToKeep = 1;
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      '/frostlog/' + l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/') +
-      (l.search ? '?'+l.search.slice(1) : '') +
-      (l.hash ? '#'+l.hash : '')
-    );*/
-  </script>
-</head>
-<body>
-</body>
-</html> -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frostlog</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // GitHub Pages workaround for client-side routing
+      // Store the redirect path before reloading
+      const redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      
+      if (redirect && redirect !== location.href) {
+        history.replaceState(null, null, redirect);
+      }
+    </script>
+    <script type="module" src="/frostlog/index.js"></script>
+  </body>
+</html>
