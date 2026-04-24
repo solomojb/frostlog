@@ -21,6 +21,7 @@ import { CompanyProvider } from "./context/CompanyContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import UpdateChecker from "./components/ui/UpdateChecker";
+import WebBanner from "./components/ui/WebBanner";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
     </CompanyProvider>
     </ProgressProvider>
     </ToastProvider>
+    <WebBanner />
     </LanguageProvider>
   );
 }
