@@ -1,5 +1,6 @@
 {
   "name": "fh_session_tracker",
+  "homepage": "https://solomojb.github.io/frostlog/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
